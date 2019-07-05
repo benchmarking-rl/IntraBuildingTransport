@@ -11,7 +11,7 @@ env.seed(1998)
 step = env.reset()
 action = [ElevatorAction(-1, 1) for i in range(4)]
 for i in range(100):
-    next_state, reward, _ = env.step(action)
+    next_state, reward, _, _ = env.step(action)
 
 assert isinstance(env.attribute, MansionAttribute)
 assert isinstance(env.state, MansionState)

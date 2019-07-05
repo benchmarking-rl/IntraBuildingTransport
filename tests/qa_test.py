@@ -228,7 +228,7 @@ def run_mansion_main(mansion_env, policy_handle, iteration):
         state = mansion_env.state
 
         action = policy_handle.policy(state)
-        _, r, _ = mansion_env.step(action)
+        _, r, _, _ = mansion_env.step(action)
         output_info = policy_handle.feedback(state, action, r)
         acc_reward += r
 

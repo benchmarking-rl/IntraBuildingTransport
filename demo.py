@@ -36,7 +36,7 @@ def run_mansion_main(mansion_env, policy_handle, iteration):
         i += 1
         state = mansion_env.state
         action = policy_handle.policy(state)
-        _, r, _ = mansion_env.step(action)
+        _, r, _, _ = mansion_env.step(action)
         output_info = policy_handle.feedback(state, action, r)
         acc_reward += r
         #acc_time += time_consume
@@ -55,7 +55,7 @@ def run_mansion_main(mansion_env, policy_handle, iteration):
 def run_main(args):
 
     parser = argparse.ArgumentParser(description='Run elevator simulation')
-    parser.add_argument('--configfile', type=str, #default='../config.ini',
+    parser.add_argument('--configfile', type=str, default='./config.ini',
                             help='configuration file for running elevators')
     parser.add_argument('--iterations', type=int, default=100000000,
                             help='total number of iterations')

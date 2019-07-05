@@ -52,9 +52,10 @@ class IntraBuildingEnv():
     def step(self, action):
         time_consume, energy_consume, given_up_persons = self._mansion.run_mansion(
             action)
-        reward = - (time_consume + 0.01 * energy_consume +
+        self.reward = - (time_consume + 0.01 * energy_consume +
                     1000 * given_up_persons) * 1.0e-5
-        return (self._mansion.state, reward, {})
+        info = {'time_consume':time_consume, 'energy_consume':energy_consume, 'given_up_persons': given_up_persons}
+        return (self._mansion.state, self.reward, False, info)
 
     def reset(self):
         self._mansion.reset_env()
