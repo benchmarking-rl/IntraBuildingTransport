@@ -20,6 +20,7 @@ class IntraBuildingEnv():
         config.read(file_name)
 
         time_step = float(config['Configuration']['RunningTimeStep'])
+        assert time_step <= 1, 'RunningTimeStep in config.ini must be less than 1 in order to ensure accuracy'
 
         # Readin different person generators
         gtype = config['PersonGenerator']['PersonGeneratorType']
@@ -33,6 +34,7 @@ class IntraBuildingEnv():
         )
 
         if('LogLevel' in config['Configuration']):
+            assert config['Configuration']['LogLevel'] in ['Debug', 'Notice', 'Warning']
             self._config.set_logger_level(config['Configuration']['LogLevel'])
         if('Lognorm' in config['Configuration']):
             self._config.set_std_logfile(config['Configuration']['Lognorm'])

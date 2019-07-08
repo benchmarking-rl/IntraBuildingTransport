@@ -68,6 +68,9 @@ def state_check(state, next_state, action):
             ele_Floor = round(ele_Floor, 2)
             ele_Velocity = round(ele_Velocity, 2)
             ele_LoadWeight = round(ele_LoadWeight, 2)
+            next_ele_Velocity = round(next_ele_Velocity, 2)
+            ele_Velocity = round(ele_Velocity, 2)
+            next_ele_LoadWeight = round(next_ele_LoadWeight, 2)
             
             # range
             assert ele_Floor > 0 and ele_Floor <= ele.MaximumFloor
@@ -84,8 +87,9 @@ def state_check(state, next_state, action):
                 assert t >= 1 and t <= ele.MaximumFloor
             
             #relation
-            # if(ele_Velocity == 0 and ele.CurrentDispatchTarget != 0):
-                # assert (abs(round(ele_Floor) - (ele_Floor % 1)) <= 0) or (ele_Floor % 1 != 0 and ele.Direction == 0)
+            if(ele_Velocity == 0 and ele.Direction != 0):
+                assert (ele_Floor % 1) == 0 or \
+                        (ele_Floor % 1 != 0 and next_ele.Direction == 0)
             if(ele_Floor % 1 != 0 and ele.Direction != 0):
                 assert ele_Velocity != 0 or next_ele_Velocity != 0 or\
                          next_ele.Direction == 0 or ele_Floor == ele.CurrentDispatchTarget
@@ -101,44 +105,51 @@ def state_check(state, next_state, action):
                         assert (next_ele.DoorIsClosing or next_ele.DoorIsOpening) == False
             if((ele_Floor % 1 != 0) or ((ele.DoorIsClosing and ele.DoorIsOpening) == True)):
                 assert ele.DoorState == 0.0
-                assert ele.DoorIsClosing == False
+                assert ele.DoorIsClosing == False or next_ele.DoorIsClosing == False
                 assert ele.DoorIsOpening == False
             if(ele_Velocity != 0.0 and ele.Direction != 0):
                 assert ele.DoorState == 0.0
-            if(ele.OverloadedAlarm > 0):
-                assert ele_LoadWeight >= ele.MaximumLoad - 100
+            if(ele_Velocity != 0.0 and len(ele.ReservedTargetFloors) > 0):
+                assert ele_LoadWeight > 0
+            if(ele_Velocity != 0.0 and ele_LoadWeight > 0):
+                assert len(ele.ReservedTargetFloors) > 0
+            if(next_ele.OverloadedAlarm > 0 and ele.OverloadedAlarm == 0):
+                assert next_ele_LoadWeight >= ele.MaximumLoad - 200
             if(len(ele.ReservedTargetFloors) != 0):
                 assert ele_LoadWeight >= 20
 
-            # # dynamic check
-            # delta_Floor = next_ele_Floor - ele_Floor
-            # assert delta_Floor * next_ele_Velocity >= 0 or delta_Floor * ele_Velocity >= 0
-            # target_list = ele.ReservedTargetFloors[:]
-            # # if(ele.CurrentDispatchTarget != 0):
-            # #     target_list.append(ele.CurrentDispatchTarget)
-            # if(delta_Floor > 0): # going up
-            #     min_target = min(target_list) if len(target_list) > 0 else ele.MaximumFloor + 1
-            #     assert ele_Floor <= min_target
-            #     assert next_ele_Velocity > 0 or ele_Velocity > 0
-            # if(delta_Floor < 0): # going down
-            #     max_target = max(target_list) if len(target_list) > 0 else 0
-            #     assert ele_Floor >= max_target
-            #     assert next_ele_Velocity < 0 or ele_Velocity < 0
+            # dynamic check
+            delta_Floor = round(next_ele_Floor - ele_Floor, 2)
+            assert delta_Floor * next_ele_Velocity >= 0 or delta_Floor * ele_Velocity >= 0
+            target_list = ele.ReservedTargetFloors[:]
+            # if(ele.CurrentDispatchTarget != 0):
+            #     target_list.append(ele.CurrentDispatchTarget)
+            if(delta_Floor > 0 and ele_Velocity != 0.0 and ele_Floor % 1 != 0): # going up
+                min_target = min(target_list) if len(target_list) > 0 else ele.MaximumFloor + 1
+                assert ele_Floor <= min_target
+                assert next_ele_Velocity > 0 or ele_Velocity > 0 or ele.Direction == 0
+            if(delta_Floor < 0 and ele_Velocity != 0.0 and ele_Floor % 1 != 0): # going down
+                max_target = max(target_list) if len(target_list) > 0 else 0
+                assert ele_Floor >= max_target
+                assert next_ele_Velocity < 0 or ele_Velocity < 0 or ele.Direction == 0
             # if(delta_Floor == 0):
-            #     assert next_ele_Velocity == 0
+            #     assert next_ele_Velocity == 0 or ele_Velocity * next_ele_Velocity <= 0
             
-            # # if((next_ele_LoadWeight - ele_LoadWeight) > 0):
-            # #     # assert len(next_ele.ReservedTargetFloors) > len(ele.ReservedTargetFloors)
-            # #     assert ele.DoorState > 0 or ele.DoorIsOpening or ele.DoorIsClosing
-            # # if((next_ele_LoadWeight - ele_LoadWeight) < 0):
-            # #     # assert len(next_ele.ReservedTargetFloors) < len(ele.ReservedTargetFloors)
-            # #     assert ele.DoorState > 0 or ele.DoorIsOpening or ele.DoorIsClosing
-            # if(len(next_ele.ReservedTargetFloors) > len(ele.ReservedTargetFloors)):
-            #     assert (next_ele_LoadWeight - ele_LoadWeight) > 0
-            #     assert ele.DoorState > 0 or ele.DoorIsOpening or ele.DoorIsClosing
-            # if(len(next_ele.ReservedTargetFloors) < len(ele.ReservedTargetFloors)):
-            #     # assert (next_ele_LoadWeight - ele_LoadWeight) < 0
-            #     assert ele.DoorState > 0 or ele.DoorIsOpening or ele.DoorIsClosing
+            if((next_ele_LoadWeight - ele_LoadWeight) > 0.01):
+                assert ele.DoorState > 0 or ele.DoorIsOpening or ele.DoorIsClosing
+            if((next_ele_LoadWeight - ele_LoadWeight) < -0.01):
+                assert ele.DoorState > 0 or ele.DoorIsOpening or ele.DoorIsClosing
+            if(ele.OverloadedAlarm < next_ele.OverloadedAlarm):
+                assert ele.DoorState > 0 or ele.DoorIsOpening or ele.DoorIsClosing
+                assert len(next_ele.ReservedTargetFloors) == len(ele.ReservedTargetFloors) #?????
+                # assert next_ele_LoadWeight >= ele_LoadWeight # not right
+
+            if(len(next_ele.ReservedTargetFloors) > len(ele.ReservedTargetFloors)):
+                assert (next_ele_LoadWeight - ele_LoadWeight) >= 0 #!!!
+                assert ele.DoorState > 0 or ele.DoorIsOpening or ele.DoorIsClosing
+            if(len(next_ele.ReservedTargetFloors) < len(ele.ReservedTargetFloors)):
+                # assert (next_ele_LoadWeight - ele_LoadWeight) < 0 # not right
+                assert ele.DoorState > 0 or ele.DoorIsOpening or ele.DoorIsClosing
 
             # if(ele.OverloadedAlarm > 0):
             #     assert ele.ReservedTargetFloors == next_ele.ReservedTargetFloors
@@ -215,38 +226,39 @@ def print_next_state(state):
 
 
 def run_mansion_main(mansion_env, policy_handle, iteration):
-    mansion_env.reset()
+    last_state = mansion_env.reset()
     policy_handle.link_mansion(mansion_env.attribute)
     policy_handle.load_settings()
     i = 0
     acc_reward = 0.0
 
-    last_state = copy.deepcopy(mansion_env.state)
+     # = copy.deepcopy(mansion_env.state)
 
     while i < iteration:
         i += 1
-        state = mansion_env.state
+        # state = mansion_env.state
 
-        action = policy_handle.policy(state)
-        _, r, _, _ = mansion_env.step(action)
-        output_info = policy_handle.feedback(state, action, r)
+        action = policy_handle.policy(last_state)
+        state, r, _, _ = mansion_env.step(action)
+        output_info = policy_handle.feedback(last_state, action, r)
         acc_reward += r
 
         if(isinstance(output_info, dict) and len(output_info) > 0):
             mansion_env.log_notice("%s", output_info)
         if(i % 3600 == 0):
-            mansion_env.log_notice(
+            print(
                 "Accumulated Reward: %f, Mansion Status: %s",
                 acc_reward, mansion_env.statistics)
             acc_reward = 0.0
 
         print_state(state, action)
+        print('reward: %f' % r)
         state_check(last_state, state, action)
         last_state = copy.deepcopy(state)
 
 
 # run main program with args
-def run_qa_test(configfile, iterations, controlpolicy):
+def run_qa_test(configfile, iterations, controlpolicy, set_seed=None):
     print('configfile:', configfile) # configuration file for running elevators
     print('iterations:', iterations) # total number of iterations
     print('controlpolicy:', controlpolicy) # policy type: rule_benchmark or others
@@ -258,14 +270,59 @@ def run_qa_test(configfile, iterations, controlpolicy):
     mansion_env = IntraBuildingEnv(configfile)
     dispatcher = Dispatcher()
 
+    if(set_seed):
+        mansion_env.seed(set_seed)
+
     run_mansion_main(mansion_env, dispatcher, iterations)
 
     return 0
 
+def run_time_step_abnormal_test(configfile, iterations, controlpolicy, set_seed=None):
+    try:
+        run_qa_test(configfile, iterations, controlpolicy, set_seed=set_seed)
+    except AssertionError:
+        print('run_time_step_abnormal_test pass')
+
+def run_action_abnormal_test(action_target_floor, action_target_direction, set_seed):
+    flag = True
+    try:
+        env = IntraBuildingEnv("config.ini")
+        if(set_seed):
+            env.seed(set_seed)
+        state = env.reset()
+
+        action = [ElevatorAction(action_target_floor, action_target_direction) for i in range(4)]
+        next_state, reward, _, _ = env.step(action)
+    except AssertionError:
+        flag = False
+        print('abnormal action: ', action_target_floor, type(action_target_floor) \
+                                , action_target_direction, type(action_target_direction))
+        print('run_action_abnormal_test pass')
+    if (flag):
+        print('abnormal action: ', action_target_floor, type(action_target_floor) \
+                                , action_target_direction, type(action_target_direction))
+        print('run_action_abnormal_test fail')
+        assert False
+
 
 if __name__ == "__main__":
-    run_qa_test('config.ini', 100, 'rule_benchmark')
-    run_qa_test('tests/conf/config1.ini', 100, 'rule_benchmark')
-    run_qa_test('tests/conf/config2.ini', 100, 'rule_benchmark')
-    run_qa_test('tests/conf/config3.ini', 100, 'rule_benchmark')
+    if (len(sys.argv) == 2):
+        set_seed = int(sys.argv[1])
+    else:
+        set_seed = None
+
+    run_qa_test('config.ini', 40000, 'rule_benchmark', set_seed)
+    run_qa_test('tests/conf/config1.ini', 4000, 'rule_benchmark', set_seed) # 1 elevator
+    run_qa_test('tests/conf/config2.ini', 4000, 'rule_benchmark', set_seed) # 100 floors 20 elevator 0.3 time_step
+    run_qa_test('tests/conf/config3.ini', 4000, 'rule_benchmark', set_seed) # quick person generator
+    run_qa_test('tests/conf/config4.ini', 4000, 'rule_benchmark', set_seed) # 1.0 time_step
+    run_time_step_abnormal_test('tests/conf/config_time_step_more_than_1.ini', 100, 'rule_benchmark', set_seed)
+    run_action_abnormal_test(-1, 1, set_seed)
+    run_action_abnormal_test(10000, -1, set_seed)
+    run_action_abnormal_test(5.0, 1, set_seed)
+    run_action_abnormal_test('5', 1, set_seed)
+    run_action_abnormal_test(5, 4, set_seed)
+    run_action_abnormal_test(5, '-1', set_seed)
+
+
 

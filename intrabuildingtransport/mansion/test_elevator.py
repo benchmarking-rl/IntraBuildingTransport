@@ -1,6 +1,10 @@
 """
 Unit test class
 """
+import sys
+import unittest
+import mock
+sys.path.append("../../")
 from intrabuildingtransport.mansion.person_generators.uniform_generator import UniformPersonGenerator
 from intrabuildingtransport.mansion import person_generators
 from intrabuildingtransport.mansion.person_generators import uniform_generator
@@ -8,10 +12,7 @@ from intrabuildingtransport.mansion.utils import PersonType, MansionState, Eleva
 from intrabuildingtransport.mansion.elevator import Elevator
 from intrabuildingtransport.mansion.mansion_manager import MansionManager
 from intrabuildingtransport.mansion.mansion_config import MansionConfig
-import sys
-import unittest
-import mock
-sys.path.append(".")
+
 
 
 class TestElevator(unittest.TestCase):
