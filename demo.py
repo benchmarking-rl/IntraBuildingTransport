@@ -25,6 +25,7 @@ sys.path.append('.')
 
 
 def run_mansion_main(mansion_env, policy_handle, iteration):
+    mansion_env.render()
     mansion_env.reset()
     policy_handle.link_mansion(mansion_env.attribute)
     policy_handle.load_settings()
@@ -55,7 +56,7 @@ def run_mansion_main(mansion_env, policy_handle, iteration):
 def run_main(args):
 
     parser = argparse.ArgumentParser(description='Run elevator simulation')
-    parser.add_argument('--configfile', type=str, #default='../config.ini',
+    parser.add_argument('--configfile', type=str, default='./config.ini',
                             help='configuration file for running elevators')
     parser.add_argument('--iterations', type=int, default=100000000,
                             help='total number of iterations')

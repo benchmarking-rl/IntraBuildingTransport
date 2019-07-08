@@ -3,12 +3,15 @@ from intrabuildingtransport.mansion.person_generators.generator_proxy import Per
 from intrabuildingtransport.mansion.mansion_config import MansionConfig
 from intrabuildingtransport.mansion.utils import ElevatorState, MansionState
 from intrabuildingtransport.mansion.mansion_manager import MansionManager
+
+from animation.courier import Courier
+
 import configparser
 import random
 import sys
+from time import sleep
 sys.path.append('.')
 sys.path.append('..')
-
 
 class IntraBuildingEnv():
     '''
@@ -46,6 +49,8 @@ class IntraBuildingEnv():
             config['MansionInfo']['Name']
         )
 
+        self.render_flag = False
+
     def seed(self, seed=None):
         set_seed(seed)
 
@@ -54,6 +59,9 @@ class IntraBuildingEnv():
             action)
         reward = - (time_consume + 0.01 * energy_consume +
                     1000 * given_up_persons) * 1.0e-5
+        
+        if self.render_flag:
+            sleep(1/100)
         return (self._mansion.state, reward, {})
 
     def reset(self):
@@ -61,7 +69,11 @@ class IntraBuildingEnv():
         return self._mansion.state
 
     def render(self):
-        raise NotImplementedError()
+        self.render_flag = True
+        thread = Courier(shared = self._mansion, name = 'courier')
+        thread.daemon = True
+        thread.start()  # TODO: end the process
+        # raise NotImplementedError()
 
     def close(self):
         pass
@@ -80,7 +92,7 @@ class IntraBuildingEnv():
 
     @property
     def log_debug(self):
-        return self._config.log_debug
+        return self._config.log_notice
 
     @property
     def log_notice(self):
