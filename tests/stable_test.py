@@ -22,14 +22,6 @@ def main():
     os.system(sys.executable + ' tests/qa_test.py 2019 > result1')
     os.system(sys.executable + ' tests/qa_test.py 2019 > result2')
     os.system('diff result1 result2 > stable_diff')
-    # diff_num = os.system('wc -l stable_diff')
-    # time_num = os.system('grep world_time stable_diff | wc -l')
-    # print('diff line: ', diff_num)
-    # print('time_num line: ', time_num)
-    # # if(diff_num != 0):
-    # #     print('stable test has diff')
-    # #     exit(1)
-    # a = os.system('1 == 2')
     with open('result1', 'r') as res1_f, open('result2', 'r') as res2_f:
         res1_lines_list = res1_f.readlines()
         res2_lines_list = res2_f.readlines()
