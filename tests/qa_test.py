@@ -317,7 +317,7 @@ if __name__ == "__main__":
     run_qa_test('tests/conf/config3.ini', 4000, 'rule_benchmark', set_seed) # quick person generator
     run_qa_test('tests/conf/config4.ini', 4000, 'rule_benchmark', set_seed) # 1.0 time_step
     run_time_step_abnormal_test('tests/conf/config_time_step_more_than_1.ini', 100, 'rule_benchmark', set_seed)
-    run_action_abnormal_test(-1, 1, set_seed)
+    run_action_abnormal_test(-2, 1, set_seed)
     run_action_abnormal_test(10000, -1, set_seed)
     run_action_abnormal_test(5.0, 1, set_seed)
     run_action_abnormal_test('5', 1, set_seed)
