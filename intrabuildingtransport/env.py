@@ -3,6 +3,9 @@ from intrabuildingtransport.mansion.person_generators.generator_proxy import Per
 from intrabuildingtransport.mansion.mansion_config import MansionConfig
 from intrabuildingtransport.mansion.utils import ElevatorState, MansionState
 from intrabuildingtransport.mansion.mansion_manager import MansionManager
+
+from animation.rendering import Render
+
 import configparser
 import random
 import sys
@@ -46,6 +49,8 @@ class IntraBuildingEnv():
             config['MansionInfo']['Name']
         )
 
+        self.viewer = Render(self._mansion)
+
     def seed(self, seed=None):
         set_seed(seed)
 
@@ -61,7 +66,7 @@ class IntraBuildingEnv():
         return self._mansion.state
 
     def render(self):
-        raise NotImplementedError()
+        self.viewer.view()
 
     def close(self):
         pass
@@ -80,7 +85,7 @@ class IntraBuildingEnv():
 
     @property
     def log_debug(self):
-        return self._config.log_debug
+        return self._config.log_notice
 
     @property
     def log_notice(self):

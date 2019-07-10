@@ -274,6 +274,20 @@ class MansionManager(object):
         return self._config
 
     @property
+    def waiting_queue(self):
+        '''
+        Returns the waiting queue of each floor
+        '''
+        return [self._wait_upward_persons_queue, self._wait_downward_persons_queue]
+
+    @property
+    def loaded_people(self):
+        '''
+        Returns: the number of loaded people of each elevator
+        '''
+        return [self._elevators[i].loaded_people_num for i in range(self._elevator_number)]
+
+    @property
     def name(self):
         '''
         Returns name of the mansion
