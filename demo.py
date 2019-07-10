@@ -25,7 +25,6 @@ sys.path.append('.')
 
 
 def run_mansion_main(mansion_env, policy_handle, iteration):
-    mansion_env.render()
     mansion_env.reset()
     policy_handle.link_mansion(mansion_env.attribute)
     policy_handle.load_settings()
@@ -35,6 +34,7 @@ def run_mansion_main(mansion_env, policy_handle, iteration):
     #acc_energy = 0.0
     while i < iteration:
         i += 1
+        mansion_env.render()
         state = mansion_env.state
         action = policy_handle.policy(state)
         _, r, _ = mansion_env.step(action)
