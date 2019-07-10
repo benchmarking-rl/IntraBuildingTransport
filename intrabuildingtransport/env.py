@@ -67,7 +67,6 @@ class IntraBuildingEnv():
 
     def render(self):
         self.viewer.view()
-        # raise NotImplementedError()
 
     def close(self):
         pass
