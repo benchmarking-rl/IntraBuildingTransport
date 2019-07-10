@@ -2,7 +2,7 @@ import pyglet
 from pyglet.gl import *
 
 
-pyglet.resource.path = ['./resources']
+pyglet.resource.path = ['./animation/resources']
 pyglet.resource.reindex()
 
 class Render(pyglet.window.Window):
