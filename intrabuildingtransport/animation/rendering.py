@@ -1,13 +1,11 @@
 import pyglet
-from pyglet.gl import *
 
 
-pyglet.resource.path = ['./animation/resources']
+pyglet.resource.path = ['./intrabuildingtransport/animation/resources']
 pyglet.resource.reindex()
 
 class Render(pyglet.window.Window):
     def __init__(self, shared):
-       
         self.shared_mansion = shared
         self.floor_height = self.shared_mansion.attribute.FloorHeight
         self.elevator_num = self.shared_mansion.attribute.ElevatorNumber

@@ -1,5 +1,5 @@
 import sys
-sys.path.append('./')
+# sys.path.append('.')
 
 from intrabuildingtransport.mansion.utils import MansionAttribute, MansionState
 from intrabuildingtransport.mansion.utils import ElevatorAction

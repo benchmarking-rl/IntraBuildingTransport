@@ -21,7 +21,6 @@ from intrabuildingtransport.mansion.mansion_manager import MansionManager
 import sys
 import argparse
 import configparser
-sys.path.append('.')
 
 
 def run_mansion_main(mansion_env, policy_handle, iteration):
