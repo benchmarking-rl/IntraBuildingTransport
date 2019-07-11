@@ -32,7 +32,7 @@ class MansionConfig(object):
         self._start_time = start_time
         self._current_time = start_time
         self._delta_t = dt
-        # Logger Level: 1. Debug, 2. Notice, 3. WARNING
+        # Logger Level: 1. Debug, 2. Notice, 3. Warning
         self._logger_level = 2
         self._logger_stream_std = sys.stdout
         self._logger_stream_err = sys.stderr
