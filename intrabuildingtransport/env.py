@@ -3,9 +3,7 @@ from intrabuildingtransport.mansion.person_generators.generator_proxy import Per
 from intrabuildingtransport.mansion.mansion_config import MansionConfig
 from intrabuildingtransport.mansion.utils import ElevatorState, MansionState
 from intrabuildingtransport.mansion.mansion_manager import MansionManager
-
 from animation.rendering import Render
-
 import configparser
 import random
 import sys
@@ -23,6 +21,7 @@ class IntraBuildingEnv():
         config.read(file_name)
 
         time_step = float(config['Configuration']['RunningTimeStep'])
+        assert time_step <= 1, 'RunningTimeStep in config.ini must be less than 1 in order to ensure accuracy'
 
         # Readin different person generators
         gtype = config['PersonGenerator']['PersonGeneratorType']
@@ -36,6 +35,7 @@ class IntraBuildingEnv():
         )
 
         if('LogLevel' in config['Configuration']):
+            assert config['Configuration']['LogLevel'] in ['Debug', 'Notice', 'Warning']
             self._config.set_logger_level(config['Configuration']['LogLevel'])
         if('Lognorm' in config['Configuration']):
             self._config.set_std_logfile(config['Configuration']['Lognorm'])
@@ -49,7 +49,7 @@ class IntraBuildingEnv():
             config['MansionInfo']['Name']
         )
 
-        self.viewer = Render(self._mansion)
+        self.viewer = None
 
     def seed(self, seed=None):
         set_seed(seed)
@@ -57,15 +57,18 @@ class IntraBuildingEnv():
     def step(self, action):
         time_consume, energy_consume, given_up_persons = self._mansion.run_mansion(
             action)
-        reward = - (time_consume + 0.01 * energy_consume +
+        self.reward = - (time_consume + 0.01 * energy_consume +
                     1000 * given_up_persons) * 1.0e-5
-        return (self._mansion.state, reward, {})
+        info = {'time_consume':time_consume, 'energy_consume':energy_consume, 'given_up_persons': given_up_persons}
+        return (self._mansion.state, self.reward, False, info)
 
     def reset(self):
         self._mansion.reset_env()
         return self._mansion.state
 
     def render(self):
+        if (self.viewer == None):
+            self.viewer = Render(self._mansion)
         self.viewer.view()
 
     def close(self):
@@ -85,7 +88,7 @@ class IntraBuildingEnv():
 
     @property
     def log_debug(self):
-        return self._config.log_notice
+        return self._config.log_debug
 
     @property
     def log_notice(self):

@@ -80,7 +80,7 @@ class Elevator(object):
             self._maximum_acceleration
 
     def __repr__(self):
-        return ("""Elevator Object: %s\n
+      return ("""Elevator Object: %s\n
             State\n\t
             Position: %f\n\t
             Floors: %2.2f\n\t
@@ -747,6 +747,8 @@ class Elevator(object):
         assert isinstance(action, ElevatorAction)
         assert isinstance(action.TargetFloor, int)
         assert isinstance(action.DirectionIndicator, int)
+        assert (action.TargetFloor >= -1 and action.TargetFloor <= self._number_of_floors)
+        assert (action.DirectionIndicator in [-1, 0, 1])
         if(action.TargetFloor >= 0 and action.TargetFloor <= self._config.number_of_floors):
             self._dispatch_target = action.TargetFloor
             self._dispatch_target_direction = action.DirectionIndicator
