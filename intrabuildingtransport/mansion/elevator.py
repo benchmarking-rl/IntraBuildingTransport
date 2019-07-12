@@ -80,7 +80,7 @@ class Elevator(object):
             self._maximum_acceleration
 
     def __repr__(self):
-      return ("""Elevator Object: %s\n
+        return ("""Elevator Object: %s\n
             State\n\t
             Position: %f\n\t
             Floors: %2.2f\n\t
