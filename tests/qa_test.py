@@ -17,7 +17,6 @@ import sys
 import time
 import copy
 import traceback
-sys.path.append('./')
 
 from intrabuildingtransport.env import IntraBuildingEnv
 from intrabuildingtransport.mansion.person_generators.generator_proxy import PersonGenerator

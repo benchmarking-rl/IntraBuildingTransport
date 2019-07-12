@@ -12,7 +12,9 @@ from intrabuildingtransport.mansion.utils import PersonType, MansionState, Eleva
 from intrabuildingtransport.mansion.elevator import Elevator
 from intrabuildingtransport.mansion.mansion_manager import MansionManager
 from intrabuildingtransport.mansion.mansion_config import MansionConfig
-
+import sys
+import unittest
+import mock
 
 
 class TestElevator(unittest.TestCase):

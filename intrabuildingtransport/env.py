@@ -6,15 +6,13 @@ from intrabuildingtransport.mansion.mansion_manager import MansionManager
 
 NoDisplay = False
 try:
-    from animation.rendering import Render
+    from intrabuildingtransport.animation.rendering import Render
 except Exception as e:
     NoDisplay = True
 
 import configparser
 import random
 import sys
-sys.path.append('.')
-sys.path.append('..')
 
 
 class IntraBuildingEnv():
@@ -77,7 +75,7 @@ class IntraBuildingEnv():
         if self.viewer is None:
             if NoDisplay:
                 raise Exception('[Error] Cannot connect to display screen. \
-                        \n\rYou are running the render() function on a machine that does not have a display')
+                    \n\rYou are running the render() functoin on a manchine that does not have a display screen')
             self.viewer = Render(self._mansion)
         self.viewer.view()
 
