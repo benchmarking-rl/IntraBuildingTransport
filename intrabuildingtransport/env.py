@@ -3,7 +3,12 @@ from intrabuildingtransport.mansion.person_generators.generator_proxy import Per
 from intrabuildingtransport.mansion.mansion_config import MansionConfig
 from intrabuildingtransport.mansion.utils import ElevatorState, MansionState
 from intrabuildingtransport.mansion.mansion_manager import MansionManager
-from intrabuildingtransport.animation.rendering import Render
+
+NoDisplay = False
+try:
+    from intrabuildingtransport.animation.rendering import Render
+except Exception as e:
+    NoDisplay = True
 
 import configparser
 import random
@@ -63,7 +68,10 @@ class IntraBuildingEnv():
         return self._mansion.state
 
     def render(self):
-        if self.viewer == None:
+        if self.viewer is None:
+            if NoDisplay:
+                raise Exception('[Error] Cannot connect to display screen. \
+                    \n\rYou are running the render() functoin on a manchine that does not haave a display screen')
             self.viewer = Render(self._mansion)
         self.viewer.view()
 
