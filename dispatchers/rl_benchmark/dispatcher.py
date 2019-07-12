@@ -8,7 +8,7 @@ from collections import deque
 
 from intrabuildingtransport.mansion.utils import ElevatorState, ElevatorAction, MansionState
 from intrabuildingtransport.mansion.utils import EPSILON, HUGE
-from dispatchers.dispatcher_base import DispatcherBase
+from intrabuildingtransport.dispatcher_base import DispatcherBase
 from dispatchers.rl_benchmark.utils import mansion_state_preprocessing, obs_dim, act_dim
 from dispatchers.rl_benchmark.utils import action_idx_to_action, action_to_action_idx
 from dispatchers.rl_benchmark.model import RLDispatcherModel, ElevatorAgent

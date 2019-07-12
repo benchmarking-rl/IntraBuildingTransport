@@ -1,6 +1,3 @@
-import sys
-sys.path.append('./')
-
 from intrabuildingtransport.mansion.utils import MansionAttribute, MansionState
 from intrabuildingtransport.mansion.utils import ElevatorAction
 from intrabuildingtransport.env import IntraBuildingEnv

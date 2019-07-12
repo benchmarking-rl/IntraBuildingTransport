@@ -11,7 +11,6 @@ from intrabuildingtransport.mansion.mansion_config import MansionConfig
 import sys
 import unittest
 import mock
-sys.path.append(".")
 
 
 class TestElevator(unittest.TestCase):

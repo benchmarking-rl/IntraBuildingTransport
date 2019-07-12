@@ -21,10 +21,9 @@ from intrabuildingtransport.mansion.mansion_manager import MansionManager
 import sys
 import argparse
 import configparser
-sys.path.append('.')
 
 
-def run_mansion_main(mansion_env, policy_handle, iteration):
+def run_mansion_main(mansion_env, policy_handle, iteration, need_render=False):
     mansion_env.reset()
     policy_handle.link_mansion(mansion_env.attribute)
     policy_handle.load_settings()
@@ -34,7 +33,8 @@ def run_mansion_main(mansion_env, policy_handle, iteration):
     #acc_energy = 0.0
     while i < iteration:
         i += 1
-        mansion_env.render()
+        if need_render:
+            mansion_env.render()
         state = mansion_env.state
         action = policy_handle.policy(state)
         _, r, _ = mansion_env.step(action)
@@ -62,10 +62,13 @@ def run_main(args):
                             help='total number of iterations')
     parser.add_argument('--controlpolicy', type=str, default='rule_benchmark',
                             help='policy type: rule_benchmark or others')
+    parser.add_argument('--render', type=str, default=False,
+                            help='if set True, GUI will be shown')
     args = parser.parse_args(args)
     print('configfile:', args.configfile)
     print('iterations:', args.iterations)
     print('controlpolicy:', args.controlpolicy)
+    print('render:', args.render)
 
     control_module = ("dispatchers.{}.dispatcher"
                       .format(args.controlpolicy))
@@ -73,7 +76,7 @@ def run_main(args):
 
     mansion_env = IntraBuildingEnv(args.configfile)
     dispatcher = Dispatcher()
-    run_mansion_main(mansion_env, dispatcher, args.iterations)
+    run_mansion_main(mansion_env, dispatcher, args.iterations, args.render)
 
     return 0
 

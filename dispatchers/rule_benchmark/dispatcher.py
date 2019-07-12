@@ -3,7 +3,7 @@ import random
 import queue
 from intrabuildingtransport.mansion.utils import ElevatorState, ElevatorAction, MansionState
 from intrabuildingtransport.mansion.utils import EPSILON, HUGE
-from dispatchers.dispatcher_base import DispatcherBase
+from intrabuildingtransport.dispatcher_base import DispatcherBase
 
 
 class Dispatcher(DispatcherBase):
