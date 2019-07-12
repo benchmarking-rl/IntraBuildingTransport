@@ -25,6 +25,7 @@ class IntraBuildingEnv():
         config.read(file_name)
 
         time_step = float(config['Configuration']['RunningTimeStep'])
+        assert time_step <= 1, 'RunningTimeStep in config.ini must be less than 1 in order to ensure accuracy'
 
         # Readin different person generators
         gtype = config['PersonGenerator']['PersonGeneratorType']
@@ -38,6 +39,8 @@ class IntraBuildingEnv():
         )
 
         if('LogLevel' in config['Configuration']):
+            assert config['Configuration']['LogLevel'] in ['Debug', 'Notice', 'Warning'],\
+                        'LogLevel must be one of [Debug, Notice, Warning]'
             self._config.set_logger_level(config['Configuration']['LogLevel'])
         if('Lognorm' in config['Configuration']):
             self._config.set_std_logfile(config['Configuration']['Lognorm'])
@@ -61,7 +64,8 @@ class IntraBuildingEnv():
             action)
         reward = - (time_consume + 0.01 * energy_consume +
                     1000 * given_up_persons) * 1.0e-5
-        return (self._mansion.state, reward, {})
+        info = {'time_consume':time_consume, 'energy_consume':energy_consume, 'given_up_persons': given_up_persons}
+        return (self._mansion.state, reward, False, info)
 
     def reset(self):
         self._mansion.reset_env()
@@ -92,7 +96,7 @@ class IntraBuildingEnv():
 
     @property
     def log_debug(self):
-        return self._config.log_notice
+        return self._config.log_debug
 
     @property
     def log_notice(self):
