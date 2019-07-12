@@ -14,7 +14,6 @@ from intrabuildingtransport.mansion.mansion_manager import MansionManager
 from intrabuildingtransport.mansion.mansion_config import MansionConfig
 
 
-
 class TestElevator(unittest.TestCase):
     # checked
     # @unittest.skip("test")
