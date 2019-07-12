@@ -3,7 +3,13 @@ from intrabuildingtransport.mansion.person_generators.generator_proxy import Per
 from intrabuildingtransport.mansion.mansion_config import MansionConfig
 from intrabuildingtransport.mansion.utils import ElevatorState, MansionState
 from intrabuildingtransport.mansion.mansion_manager import MansionManager
-from animation.rendering import Render
+
+NoDisplay = False
+try:
+    from animation.rendering import Render
+except Exception as e:
+    NoDisplay = True
+
 import configparser
 import random
 import sys
@@ -35,7 +41,8 @@ class IntraBuildingEnv():
         )
 
         if('LogLevel' in config['Configuration']):
-            assert config['Configuration']['LogLevel'] in ['Debug', 'Notice', 'Warning']
+            assert config['Configuration']['LogLevel'] in ['Debug', 'Notice', 'Warning'],\
+                        'LogLevel must be one of [Debug, Notice, Warning]'
             self._config.set_logger_level(config['Configuration']['LogLevel'])
         if('Lognorm' in config['Configuration']):
             self._config.set_std_logfile(config['Configuration']['Lognorm'])
@@ -57,17 +64,20 @@ class IntraBuildingEnv():
     def step(self, action):
         time_consume, energy_consume, given_up_persons = self._mansion.run_mansion(
             action)
-        self.reward = - (time_consume + 0.01 * energy_consume +
+        reward = - (time_consume + 0.01 * energy_consume +
                     1000 * given_up_persons) * 1.0e-5
         info = {'time_consume':time_consume, 'energy_consume':energy_consume, 'given_up_persons': given_up_persons}
-        return (self._mansion.state, self.reward, False, info)
+        return (self._mansion.state, reward, False, info)
 
     def reset(self):
         self._mansion.reset_env()
         return self._mansion.state
 
     def render(self):
-        if (self.viewer == None):
+        if self.viewer is None:
+            if NoDisplay:
+                raise Exception('[Error] Cannot connect to display screen. \
+                        \n\rYou are running the render() function on a machine that does not have a display')
             self.viewer = Render(self._mansion)
         self.viewer.view()
 
