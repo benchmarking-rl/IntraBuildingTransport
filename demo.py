@@ -63,7 +63,7 @@ def run_main(args):
     parser.add_argument('--controlpolicy', type=str, default='rule_benchmark',
                             help='policy type: rule_benchmark or others')
     parser.add_argument('--render', type=str, default=False,
-                            help='render or not')
+                            help='if set True, GUI will be shown')
     args = parser.parse_args(args)
     print('configfile:', args.configfile)
     print('iterations:', args.iterations)

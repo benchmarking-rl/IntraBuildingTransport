@@ -71,7 +71,7 @@ class IntraBuildingEnv():
         if self.viewer is None:
             if NoDisplay:
                 raise Exception('[Error] Cannot connect to display screen. \
-                    \n\rYou are running the render() functoin on a manchine that does not haave a display screen')
+                    \n\rYou are running the render() functoin on a manchine that does not have a display screen')
             self.viewer = Render(self._mansion)
         self.viewer.view()
 

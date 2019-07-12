@@ -36,5 +36,4 @@ setuptools.setup(
     url="",
     packages=_find_packages(),  # 需要打包的目录列表
     install_requires=['pyglet>=1.4.1'],
-    # install_requires=['parl>=1.1'])
 )
