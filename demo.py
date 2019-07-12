@@ -64,10 +64,14 @@ def run_main(args):
                             help='policy type: rule_benchmark or others')
     parser.add_argument('--render', type=str, default=False,
 <<<<<<< HEAD
+<<<<<<< HEAD
                             help='render or not')
 =======
                             help='if set True, GUI will be shown')
 >>>>>>> master
+=======
+                            help='if set True, GUI will be shown')
+>>>>>>> 6d2599248c40e49cd7b079b7999f275d4f0efd38
     args = parser.parse_args(args)
     print('configfile:', args.configfile)
     print('iterations:', args.iterations)
