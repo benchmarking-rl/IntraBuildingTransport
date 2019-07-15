@@ -1,6 +1,6 @@
-from intrabuildingtransport.mansion.utils import MansionAttribute, MansionState
-from intrabuildingtransport.mansion.utils import ElevatorAction
-from intrabuildingtransport.env import IntraBuildingEnv
+from liftsim.mansion.utils import MansionAttribute, MansionState
+from liftsim.mansion.utils import ElevatorAction
+from liftsim.env import IntraBuildingEnv
 
 env = IntraBuildingEnv("config.ini")
 env.seed(1998)

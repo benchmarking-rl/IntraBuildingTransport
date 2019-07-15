@@ -13,11 +13,11 @@ Authors: wangfan04(wangfan04@baidu.com)
 Date:    2019/05/22 19:30:16
 """
 
-from intrabuildingtransport.env import IntraBuildingEnv
-from intrabuildingtransport.mansion.person_generators.generator_proxy import PersonGenerator
-from intrabuildingtransport.mansion.mansion_config import MansionConfig
-from intrabuildingtransport.mansion.utils import ElevatorState, MansionState
-from intrabuildingtransport.mansion.mansion_manager import MansionManager
+from liftsim.env import IntraBuildingEnv
+from liftsim.mansion.person_generators.generator_proxy import PersonGenerator
+from liftsim.mansion.mansion_config import MansionConfig
+from liftsim.mansion.utils import ElevatorState, MansionState
+from liftsim.mansion.mansion_manager import MansionManager
 import sys
 import argparse
 import configparser
@@ -70,7 +70,7 @@ def run_main(args):
     print('controlpolicy:', args.controlpolicy)
     print('render:', args.render)
 
-    control_module = ("dispatchers.{}.dispatcher"
+    control_module = ("baseline.{}.dispatcher"
                       .format(args.controlpolicy))
     Dispatcher = __import__(control_module, fromlist=[None]).Dispatcher
 

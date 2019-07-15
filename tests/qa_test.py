@@ -18,11 +18,11 @@ import time
 import copy
 import traceback
 
-from intrabuildingtransport.env import IntraBuildingEnv
-from intrabuildingtransport.mansion.person_generators.generator_proxy import PersonGenerator
-from intrabuildingtransport.mansion.mansion_config import MansionConfig
-from intrabuildingtransport.mansion.utils import ElevatorState, MansionState, ElevatorAction
-from intrabuildingtransport.mansion.mansion_manager import MansionManager
+from liftsim.env import IntraBuildingEnv
+from liftsim.mansion.person_generators.generator_proxy import PersonGenerator
+from liftsim.mansion.mansion_config import MansionConfig
+from liftsim.mansion.utils import ElevatorState, MansionState, ElevatorAction
+from liftsim.mansion.mansion_manager import MansionManager
 
 
 fail_flag = False
@@ -250,7 +250,7 @@ def run_qa_test(configfile, iterations, controlpolicy):
     print('iterations:', iterations) # total number of iterations
     print('controlpolicy:', controlpolicy) # policy type: rule_benchmark or others
 
-    control_module = ("dispatchers.{}.dispatcher"
+    control_module = ("baseline.{}.dispatcher"
                       .format(controlpolicy))
     Dispatcher = __import__(control_module, fromlist=[None]).Dispatcher
 

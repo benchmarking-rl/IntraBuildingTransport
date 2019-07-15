@@ -46,7 +46,7 @@ pip install liftsim
 
   - MansionState：namedtuple，包括ElevatorStates（各个电梯情况）、RequiringUpwardFloors（list，保存有乘客等待上行的楼层）、RequiringDownwardFloors（list，保存有乘客等待下行的楼层）。
 
-  - ElevatorStates：namedtuple，包括电梯当前楼层、速度、电梯调配到的楼层等等。
+  - ElevatorState：namedtuple，包括电梯当前楼层、速度、电梯调配到的楼层等等。
 
   - action：policy(self, state)需返回一个ElevatorAction的list。
 
@@ -56,7 +56,9 @@ pip install liftsim
 
     DirectionIndicator为-1（向下）、0（无方向）、1（向上）。
 
-  - **关于MansionState、ElevatorStates、ElevatorAction，详见[mansion/utils][utils]**
+  - **关于MansionState、ElevatorState、ElevatorAction，详见[mansion/utils][utils]。**
+
+  - [baseline/utils][baseline/utils]中有处理MansionState及ElevatorStates的函数供参考。
 
 ### 运行逻辑
 
@@ -73,6 +75,7 @@ dispatch_target_direction负责指示接到乘客后电梯行驶方向，当电�
 
 
 [config]: https://github.com/benchmarking-rl/IntraBuildingTransport/blob/master/config.ini
-[dispatch]: https://github.com/benchmarking-rl/IntraBuildingTransport/blob/master/intrabuildingtransport/dispatcher_base.py
-[utils]: https://github.com/benchmarking-rl/IntraBuildingTransport/blob/master/intrabuildingtransport/mansion/utils.py
+[dispatch]: https://github.com/benchmarking-rl/IntraBuildingTransport/blob/master/liftsim/dispatcher_base.py
+[utils]: https://github.com/benchmarking-rl/IntraBuildingTransport/blob/master/liftsim/mansion/utils.py
 [demo]: https://github.com/benchmarking-rl/IntraBuildingTransport/blob/master/demo.py
+[baseline/utils]: https://github.com/benchmarking-rl/IntraBuildingTransport/blob/master/baseline/utils.py
