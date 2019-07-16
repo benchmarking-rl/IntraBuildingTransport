@@ -1,6 +1,5 @@
 import sys
 import random
-import parl
 import numpy as np
 from liftsim.mansion.utils import ElevatorState, ElevatorAction
 from liftsim.mansion.utils import MansionAttribute, MansionState
