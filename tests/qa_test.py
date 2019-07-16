@@ -18,11 +18,13 @@ import time
 import copy
 import traceback
 
-from intrabuildingtransport.env import IntraBuildingEnv
-from intrabuildingtransport.mansion.person_generators.generator_proxy import PersonGenerator
-from intrabuildingtransport.mansion.mansion_config import MansionConfig
-from intrabuildingtransport.mansion.utils import ElevatorState, MansionState, ElevatorAction
-from intrabuildingtransport.mansion.mansion_manager import MansionManager
+from liftsim.env import LiftSimEnv, Wrapper, ActionWrapper, ObservationWrapper
+from liftsim.mansion.person_generators.generator_proxy import PersonGenerator
+from liftsim.mansion.mansion_config import MansionConfig
+from liftsim.mansion.utils import ElevatorState, MansionState, ElevatorAction
+from liftsim.mansion.mansion_manager import MansionManager
+from baseline.rl_benchmark.dispatcher import RL_dispatcher
+from baseline.rule_benchmark.dispatcher import Rule_dispatcher
 
 
 fail_flag = False
@@ -226,8 +228,8 @@ def print_next_state(state):
 
 def run_mansion_main(mansion_env, policy_handle, iteration):
     last_state = mansion_env.reset()
-    policy_handle.link_mansion(mansion_env.attribute)
-    policy_handle.load_settings()
+    # policy_handle.link_mansion(mansion_env.attribute)
+    # policy_handle.load_settings()
     i = 0
     acc_reward = 0.0
 
@@ -239,11 +241,11 @@ def run_mansion_main(mansion_env, policy_handle, iteration):
 
         action = policy_handle.policy(last_state)
         state, r, _, _ = mansion_env.step(action)
-        output_info = policy_handle.feedback(last_state, action, r)
+        # output_info = policy_handle.feedback(last_state, action, r)
         acc_reward += r
 
-        if(isinstance(output_info, dict) and len(output_info) > 0):
-            mansion_env.log_notice("%s", output_info)
+        # if(isinstance(output_info, dict) and len(output_info) > 0):
+        #     mansion_env.log_notice("%s", output_info)
         if(i % 3600 == 0):
             print(
                 "Accumulated Reward: %f, Mansion Status: %s",
@@ -262,17 +264,23 @@ def run_qa_test(configfile, iterations, controlpolicy, set_seed=None):
     print('iterations:', iterations) # total number of iterations
     print('controlpolicy:', controlpolicy) # policy type: rule_benchmark or others
 
-    control_module = ("dispatchers.{}.dispatcher"
-                      .format(controlpolicy))
-    Dispatcher = __import__(control_module, fromlist=[None]).Dispatcher
+    # control_module = ("dispatchers.{}.dispatcher"
+    #                   .format(controlpolicy))
+    # Dispatcher = __import__(control_module, fromlist=[None]).Dispatcher
 
-    mansion_env = IntraBuildingEnv(configfile)
-    dispatcher = Dispatcher()
+    mansion_env = LiftSimEnv(configfile)
 
     if(set_seed):
         mansion_env.seed(set_seed)
 
-    run_mansion_main(mansion_env, dispatcher, iterations)
+    if controlpolicy == 'rule_benchmark':
+        dispatcher = Rule_dispatcher(mansion_env, iterations)
+    elif controlpolicy == 'rl_benchmark':
+        mansion_env = Wrapper(mansion_env)
+        mansion_env = ActionWrapper(mansion_env)
+        mansion_env = ObservationWrapper(mansion_env)
+
+    run_mansion_main(mansion_env, dispatcher, iterations)    
 
     return 0
 
@@ -285,7 +293,7 @@ def run_time_step_abnormal_test(configfile, iterations, controlpolicy, set_seed=
 def run_action_abnormal_test(action_target_floor, action_target_direction, set_seed):
     flag = True
     try:
-        env = IntraBuildingEnv("config.ini")
+        env = LiftSimEnv()
         if(set_seed):
             env.seed(set_seed)
         state = env.reset()

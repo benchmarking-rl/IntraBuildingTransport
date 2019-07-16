@@ -26,7 +26,7 @@ def _find_packages(prefix=''):
     return packages
 
 setuptools.setup(
-    name="intrabuildingtransport",  # pypi中的名称，pip或者easy_install安装时使用的名称
+    name="liftsim",  # pypi中的名称，pip或者easy_install安装时使用的名称
     version="1.0",
     author="",
     author_email="",
