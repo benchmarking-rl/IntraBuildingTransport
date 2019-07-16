@@ -3,9 +3,9 @@
 #
 import sys
 import time
-from liftsim.mansion.utils import SimulatedTime
-from liftsim.mansion.utils import formulate_simulation_time, simulation_time_to_str, raw_time_to_str
-from liftsim.mansion.utils import args_to_string
+from intrabuildingtransport.mansion.utils import SimulatedTime
+from intrabuildingtransport.mansion.utils import formulate_simulation_time, simulation_time_to_str, raw_time_to_str
+from intrabuildingtransport.mansion.utils import args_to_string
 
 
 class MansionConfig(object):
@@ -32,7 +32,7 @@ class MansionConfig(object):
         self._start_time = start_time
         self._current_time = start_time
         self._delta_t = dt
-        # Logger Level: 1. Debug, 2. Notice, 3. WARNING
+        # Logger Level: 1. Debug, 2. Notice, 3. Warning
         self._logger_level = 2
         self._logger_stream_std = sys.stdout
         self._logger_stream_err = sys.stderr

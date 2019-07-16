@@ -4,10 +4,10 @@
 # Simulator of Elevator Power
 
 import sys
-from liftsim.mansion.utils import PersonType, ElevatorState, ElevatorAction
-from liftsim.mansion.utils import EPSILON, GRAVITY
-from liftsim.mansion.utils import velocity_planner
-from liftsim.mansion.mansion_config import MansionConfig
+from intrabuildingtransport.mansion.utils import PersonType, ElevatorState, ElevatorAction
+from intrabuildingtransport.mansion.utils import EPSILON, GRAVITY
+from intrabuildingtransport.mansion.utils import velocity_planner
+from intrabuildingtransport.mansion.mansion_config import MansionConfig
 from copy import deepcopy
 
 
@@ -175,6 +175,26 @@ class Elevator(object):
         nearest_floor = int(cur_floor + 0.5)
         delta_distance = nearest_floor - float(cur_floor)
         return nearest_floor, delta_distance
+
+    @property
+    def nearest_reachable_floor(self):
+        '''
+        Get the nearest reachable floor
+        Args:
+          None
+        Returns:
+          Nearest reachable floor
+        '''
+        if(self._current_velocity < 0.0):
+            velocity_sign = -1
+        else:
+            velocity_sign = 1
+
+        reaction_distance = 0.5 * self._current_velocity * \
+            self._current_velocity / self._maximum_acceleration
+        minimum_stop_position = self._current_position + velocity_sign * reaction_distance
+        # print("finding the minimum stop position,", minimum_stop_position)
+        return int(minimum_stop_position / self._floor_height + 2)
 
     @property
     def is_fully_open(self):
@@ -364,6 +384,7 @@ class Elevator(object):
 
     def _get_true_target(self):
         # print ("check target: %d, %d"%(self._dispatch_target, self._check_target_validity(self._dispatch_target)))
+        floor, delta_dist = self.nearest_floor
         if(self._is_overloaded_alarm > EPSILON):
             # in case overload alarm is ringing, neglect the dispatch target
             if(len(self._target_floors) < 1):
@@ -375,6 +396,8 @@ class Elevator(object):
             # check whether dispatch target is valid
             if(self._check_target_validity(self._dispatch_target)):
                 if(len(self._target_floors) == 0):
+                    # if self._dispatch_target == 0 and not self.is_stopped:
+                    #  return self.nearest_reachable_floor
                     return self._dispatch_target
                 elif(self._direction >= 0):
                     if(self._dispatch_target < self._target_floors[0]):
@@ -410,6 +433,9 @@ class Elevator(object):
                 self._floor_height - self._current_position
         no_reserved_target = (len(self._target_floors) < 1)
         # print ("target floor: %d" % target_floor)
+
+        reaction_distance = 0.5 * self._current_velocity * \
+            self._current_velocity / self._maximum_acceleration
 
         # Elevator stops at a target floor, stop and open_doors
         if(self.is_stopped and target_floor > 0):
@@ -473,7 +499,8 @@ class Elevator(object):
                 if(target_floor in self._target_floors):
                     self._target_floors.remove(target_floor)
 
-        # release the control command to the elevator door
+        # release the control command to the elevator door TODO: when would
+        # this case happen?
         if(abs(self._current_velocity) > EPSILON):
             if(self._is_door_opening):
                 self._is_door_opening = False
@@ -519,6 +546,7 @@ class Elevator(object):
 
         # caculate the variables for energy loss
         acceleration = 0.0
+        min_deceleration_zone = 0.5 * self._floor_height
 
         # The Elevator Dynamics
         eff_dt = self._dt
@@ -719,6 +747,8 @@ class Elevator(object):
         assert isinstance(action, ElevatorAction)
         assert isinstance(action.TargetFloor, int)
         assert isinstance(action.DirectionIndicator, int)
+        assert (action.TargetFloor >= -1 and action.TargetFloor <= self._number_of_floors)
+        assert (action.DirectionIndicator in [-1, 0, 1])
         if(action.TargetFloor >= 0 and action.TargetFloor <= self._config.number_of_floors):
             self._dispatch_target = action.TargetFloor
             self._dispatch_target_direction = action.DirectionIndicator
