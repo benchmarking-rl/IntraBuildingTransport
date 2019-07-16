@@ -30,6 +30,8 @@ def main():
         for i in range(count):
             line1 = res1_lines_list[i]
             line2 = res2_lines_list[i]
+            if line1.find('MainThread'):
+                continue
             line1_find = line1.find('world_time')
             line2_find = line2.find('world_time')
             if (line1_find != -1 or line2_find != -1):
