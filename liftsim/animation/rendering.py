@@ -13,7 +13,7 @@ class Render(pyglet.window.Window):
 
         self.screen_x = int(self.elevator_num * 50 + 300)
         self.screen_y = int(self.num_floor * 12.5 * self.floor_height + 60)
-        super().__init__(width=self.screen_x, height=self.screen_y)
+        super(Render, self).__init__(width=self.screen_x, height=self.screen_y)
         self.create_window()
         
 
@@ -113,7 +113,7 @@ class Render(pyglet.window.Window):
             elif self.shared_mansion._elevators[i]._direction == -1:
                 self.elevator_ele.append(pyglet.sprite.Sprite(img=self.down, x=162.5+i*50, y=self.elevator_floor*self.floor_height*12.5-25, batch = self.elevator_batch[i]))  
             
-            # when too many passengers in an elevator, use numeric numbers to show
+            # when too many passengers are in an elevator, use numeric numbers to show
             if self.shared_mansion.loaded_people[i] > 9:
                 self.elevator_ele.append(pyglet.text.Label(text="{}".format(self.shared_mansion.loaded_people[i]), font_size=8,
                                 x=175+i*50, y=self.elevator_floor*self.floor_height*12.5-25, anchor_x='center', color=(0,0,0,255), batch = self.elevator_batch[i]))
