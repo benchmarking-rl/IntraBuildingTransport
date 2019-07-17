@@ -49,14 +49,14 @@ class RL_dispatcher():
 
     def run_episode(self):
         self.env.reset()
-        self.acc_reward = 0.0
+        acc_reward = 0.0
 
         while self._global_step < self.max_episode:
             state = self.env.state
             action = self.policy(state)
             state_, reward, done, info = self.env.step(action)
             output_info = self.learn_step(state, action, reward)
-            self.acc_reward += reward
+            acc_reward += reward
             if (isinstance(output_info, dict) and len(output_info) > 0): # TODO:
                 self.env.log_notice("%s", output_info)
             if(self._global_step % 3600 == 0):

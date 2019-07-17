@@ -51,9 +51,10 @@ class ElevatorAgent(Agent):
                     Please set environment variable: `export CUDA_VISIBLE_DEVICES=[GPU_ID_YOU_WANT_TO_USE]` .'
 
         else:
-            cpu_num = os.environ.get('CPU_NUM')
-            assert cpu_num is not None and cpu_num == '1', 'Only support training in single CPU,\
-                    Please set environment variable:  `export CPU_NUM=1`.'
+            os.environ['CPU_NUM'] = str(1)
+            # cpu_num = os.environ.get('CPU_NUM')
+            # assert cpu_num is not None and cpu_num == '1', 'Only support training in single CPU,\
+            #         Please set environment variable:  `export CPU_NUM=1`.'
 
         exec_strategy = fluid.ExecutionStrategy()
         exec_strategy.num_threads = 1
