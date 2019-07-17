@@ -13,7 +13,7 @@ class Render(pyglet.window.Window):
 
         self.screen_x = int(self.elevator_num * 50 + 300)
         self.screen_y = int(self.num_floor * 12.5 * self.floor_height + 60)
-        super().__init__(width=self.screen_x, height=self.screen_y)
+        super(Render, self).__init__(width=self.screen_x, height=self.screen_y)
         self.create_window()
         
 
@@ -38,7 +38,7 @@ class Render(pyglet.window.Window):
         self.down = pyglet.resource.image("down.png")
 
         # modify images
-        self.elevator.width, self.elevator.height = 30, 45
+        self.elevator.width, self.elevator.height = 43, 45
         self.center_image(self.elevator)
 
         self.line.width, self.line.height = self.screen_x, 5
@@ -60,8 +60,8 @@ class Render(pyglet.window.Window):
         self.down.width, self.down.height = 15, 15
         self.center_image(self.down)
 
-        self.up_label = pyglet.text.Label(text="Waiting up", font_size=10, x=self.screen_x//2-100, y=self.screen_y-35, anchor_x='center', color=(0,0,0,255))
-        self.down_label = pyglet.text.Label(text="Waiting down", font_size=10, x=self.screen_x//2+100, y=self.screen_y-35, anchor_x='center', color=(0,0,0,255))
+        self.up_label = pyglet.text.Label(text="Waiting up", font_size=10, x=100, y=self.screen_y-35, anchor_x='center', color=(0,0,0,255))
+        self.down_label = pyglet.text.Label(text="Waiting down", font_size=10, x=self.screen_x-100, y=self.screen_y-35, anchor_x='center', color=(0,0,0,255))
         self.level_label = pyglet.text.Label(text="Elevator Simulator", font_size=10, x=self.screen_x//2, y=self.screen_y-15, anchor_x='center', color=(0,0,0,255))
 
     def init_batch(self):
@@ -74,6 +74,8 @@ class Render(pyglet.window.Window):
         self.waiting_people_batch = pyglet.graphics.Batch()
         self.elevator_batch = list()
         self.line_ele = list()
+        self.waiting_people_ele = list()
+        self.elevator_ele = list()
         for i in range(self.elevator_num):
             self.elevator_batch.append(pyglet.graphics.Batch())
 
@@ -83,35 +85,39 @@ class Render(pyglet.window.Window):
     def update(self):
         # update waiting_people_batch
         waiting_up, waiting_down = self.shared_mansion.waiting_queue
+        for ele in self.waiting_people_ele:
+            ele.delete()
         self.waiting_people_ele = []
-        self.waiting_people_batch = pyglet.graphics.Batch()
         for i in range(self.num_floor):
+            # left side, waiting up people
             if len(waiting_up[i]) > 9:
-                self.waiting_people_ele.append(pyglet.sprite.Sprite(img=self.man_image, x=110, y=12.5*self.floor_height*i+15, batch = self.waiting_people_batch))
-                self.waiting_people_ele.append(pyglet.text.Label(text="x{}".format(len(waiting_up[i])), font_size=8, 
+                self.waiting_people_ele.append(pyglet.sprite.Sprite(img=self.man_image, x=100, y=12.5*self.floor_height*i+15, batch = self.waiting_people_batch))
+                self.waiting_people_ele.append(pyglet.text.Label(text="x {}".format(len(waiting_up[i])), font_size=8, 
                             x=130, y=12.5*self.floor_height*i+15, anchor_x='center', color=(0,0,0,255), batch = self.waiting_people_batch))
             else:
                 for j in range(len(waiting_up[i])):
-                    self.waiting_people_ele.append(pyglet.sprite.Sprite(img = self.man_image, x=150-15*j, y=12.5*self.floor_height*i+15, batch = self.waiting_people_batch))
+                    self.waiting_people_ele.append(pyglet.sprite.Sprite(img = self.man_image, x=140-15*j, y=12.5*self.floor_height*i+15, batch = self.waiting_people_batch))
+            # right side, waiting down people
             if len(waiting_down[i]) > 9:
-                self.waiting_people_ele.append(pyglet.sprite.Sprite(img=self.man_image, x=self.screen_x-135, y=12.5*self.floor_height*i+15, batch = self.waiting_people_batch))
-                self.waiting_people_ele.append(pyglet.text.Label(text="x{}".format(len(waiting_down[i])), font_size=8, 
-                            x=self.screen_x-115, y=12.5*self.floor_height*i+15, anchor_x='center', color=(0,0,0,255), batch=self.waiting_people_batch))
+                self.waiting_people_ele.append(pyglet.sprite.Sprite(img=self.man_image, x=self.screen_x-125, y=12.5*self.floor_height*i+15, batch = self.waiting_people_batch))
+                self.waiting_people_ele.append(pyglet.text.Label(text="x {}".format(len(waiting_down[i])), font_size=8, 
+                            x=self.screen_x-95, y=12.5*self.floor_height*i+15, anchor_x='center', color=(0,0,0,255), batch=self.waiting_people_batch))
             else:
                 for j in range(len(waiting_down[i])):
-                    self.waiting_people_ele.append(pyglet.sprite.Sprite(img = self.man_image, x=self.screen_x-150+15*j, y=12.5*self.floor_height*i+15, batch = self.waiting_people_batch))
+                    self.waiting_people_ele.append(pyglet.sprite.Sprite(img = self.man_image, x=self.screen_x-140+15*j, y=12.5*self.floor_height*i+15, batch = self.waiting_people_batch))
 
         # update elevator_batch
+        for ele in self.elevator_ele:
+            ele.delete()
         self.elevator_ele = []
         for i in range(self.elevator_num):
-            self.elevator_batch[i] = pyglet.graphics.Batch()
             self.elevator_floor = self.shared_mansion.state.ElevatorStates[i].Floor
             self.elevator_ele.append(pyglet.sprite.Sprite(img=self.elevator, 
                             x=175+i*50, y=self.elevator_floor*self.floor_height*12.5-25, batch = self.elevator_batch[i]))
             if self.shared_mansion._elevators[i]._direction == 1:
-                self.elevator_ele.append(pyglet.sprite.Sprite(img=self.up, x=162.5+i*50, y=self.elevator_floor*self.floor_height*12.5-25, batch = self.elevator_batch[i]))
+                self.elevator_ele.append(pyglet.sprite.Sprite(img=self.up, x=158.5+i*50, y=self.elevator_floor*self.floor_height*12.5-25, batch = self.elevator_batch[i]))
             elif self.shared_mansion._elevators[i]._direction == -1:
-                self.elevator_ele.append(pyglet.sprite.Sprite(img=self.down, x=162.5+i*50, y=self.elevator_floor*self.floor_height*12.5-25, batch = self.elevator_batch[i]))  
+                self.elevator_ele.append(pyglet.sprite.Sprite(img=self.down, x=158.5+i*50, y=self.elevator_floor*self.floor_height*12.5-25, batch = self.elevator_batch[i]))  
             
             # when too many passengers in an elevator, use numeric numbers to show
             if self.shared_mansion.loaded_people[i] > 9:
@@ -123,6 +129,7 @@ class Render(pyglet.window.Window):
                 for j in range(self.shared_mansion.loaded_people[i]):
                     self.elevator_ele.append(pyglet.sprite.Sprite(img = self.circle, 
                                 x=160+i*50+(j%3+1)*7.5, y=15-(j//3)*15+self.elevator_floor*self.floor_height*12.5-25, batch = self.elevator_batch[i]))
+        pyglet.gl.get_current_context().set_current()
 
     def view(self):
         self.clear()

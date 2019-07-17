@@ -3,7 +3,6 @@ import random
 import queue
 from liftsim.mansion.utils import ElevatorState, ElevatorAction, MansionState
 from liftsim.mansion.utils import EPSILON, HUGE
-from liftsim.dispatcher_base import DispatcherBase
 
 
 class Rule_dispatcher():
@@ -25,7 +24,7 @@ class Rule_dispatcher():
         acc_reward = 0.0
         
         while running_step_counter < self.max_episode:
-            self.env.render()
+            # self.env.render()
             running_step_counter += 1
             state = self.env.state
             action = self.policy(state)
