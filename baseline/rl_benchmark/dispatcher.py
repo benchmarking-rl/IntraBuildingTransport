@@ -8,7 +8,6 @@ from collections import deque
 
 from liftsim.mansion.utils import ElevatorState, ElevatorAction, MansionState
 from liftsim.mansion.utils import EPSILON, HUGE
-from liftsim.dispatcher_base import DispatcherBase
 from liftsim.wrapper_utils import mansion_state_preprocessing, obs_dim, act_dim
 from liftsim.wrapper_utils import action_idx_to_action, action_to_action_idx
 from baseline.rl_benchmark.model import RLDispatcherModel, ElevatorAgent

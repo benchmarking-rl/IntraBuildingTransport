@@ -3,7 +3,6 @@ import random
 import queue
 from liftsim.mansion.utils import ElevatorState, ElevatorAction, MansionState
 from liftsim.mansion.utils import EPSILON, HUGE
-from liftsim.dispatcher_base import DispatcherBase
 
 
 class Rule_dispatcher():
