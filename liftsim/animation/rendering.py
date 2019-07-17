@@ -60,8 +60,8 @@ class Render(pyglet.window.Window):
         self.down.width, self.down.height = 15, 15
         self.center_image(self.down)
 
-        self.up_label = pyglet.text.Label(text="Waiting up", font_size=10, x=self.screen_x//2-100, y=self.screen_y-35, anchor_x='center', color=(0,0,0,255))
-        self.down_label = pyglet.text.Label(text="Waiting down", font_size=10, x=self.screen_x//2+100, y=self.screen_y-35, anchor_x='center', color=(0,0,0,255))
+        self.up_label = pyglet.text.Label(text="Waiting up", font_size=10, x=100, y=self.screen_y-35, anchor_x='center', color=(0,0,0,255))
+        self.down_label = pyglet.text.Label(text="Waiting down", font_size=10, x=self.screen_x-100, y=self.screen_y-35, anchor_x='center', color=(0,0,0,255))
         self.level_label = pyglet.text.Label(text="Elevator Simulator", font_size=10, x=self.screen_x//2, y=self.screen_y-15, anchor_x='center', color=(0,0,0,255))
 
     def init_batch(self):
@@ -98,7 +98,7 @@ class Render(pyglet.window.Window):
             if len(waiting_down[i]) > 9:
                 self.waiting_people_ele.append(pyglet.sprite.Sprite(img=self.man_image, x=self.screen_x-125, y=12.5*self.floor_height*i+15, batch = self.waiting_people_batch))
                 self.waiting_people_ele.append(pyglet.text.Label(text="x{}".format(len(waiting_down[i])), font_size=8, 
-                            x=self.screen_x-115, y=12.5*self.floor_height*i+15, anchor_x='center', color=(0,0,0,255), batch=self.waiting_people_batch))
+                            x=self.screen_x-95, y=12.5*self.floor_height*i+15, anchor_x='center', color=(0,0,0,255), batch=self.waiting_people_batch))
             else:
                 for j in range(len(waiting_down[i])):
                     self.waiting_people_ele.append(pyglet.sprite.Sprite(img = self.man_image, x=self.screen_x-140+15*j, y=12.5*self.floor_height*i+15, batch = self.waiting_people_batch))
